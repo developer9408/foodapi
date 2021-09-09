@@ -9,7 +9,8 @@ COPY src/requirements.txt ./
 RUN pip install -r requirements.txt
 
 # Bundle app source
-COPY src /app
+COPY ./app
 
-EXPOSE 5000
-CMD [ "python", "Food_app.py" ]
+EXPOSE 8080
+
+ENTRYPOINT [ "python", "app.py" ]
