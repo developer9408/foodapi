@@ -12,7 +12,7 @@ WORKDIR /app
 
 
 # Bundle app source
-COPY ./app
+COPY . /app
 
 
 
