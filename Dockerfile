@@ -1,5 +1,5 @@
 FROM python:3.6
-EXPOSE 8080
+EXPOSE 5000
 
 # Install app dependencies
 COPY src/requirements.txt /
