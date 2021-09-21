@@ -1,18 +1,19 @@
 hosts: localhost
-tasks:
-   ec2:
-    aws_access_key: AKIA5WV354T3AVHWXVWJ
-    aws-secret-key: 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
-    key_name: aiapi new key
-    group: ansible
-    instance_type: t2.micro
-    wait: yes
-    wait_timer: 500
-    image: ami-0747bdcabd34c712a
-    count: 1
-    instance_tag: 
-       Name: prod-instance 
-    monitoring: yes
-    region: us-east-1   
-    vpc_subnet_id: subnet-00741412adbb53c72
-    assign_public_ip: yes
+ tasks:
+     ec2:
+       aws_access_key: AKIA5WV354T3AVHWXVWJ
+       aws-secret-key: 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
+       key_name: aiapi new key
+       group: ansible
+       instance_type: t2.micro
+       wait: yes
+       wait_timer: 500
+       image: ami-0747bdcabd34c712a
+       count: 1
+       instance_tag: 
+         Name: prod-instance 
+       monitoring: yes
+       region: us-east-1   
+       vpc_subnet_id: subnet-00741412adbb53c72
+       assign_public_ip: yes
+       
