@@ -1,6 +1,6 @@
 - hosts: localhost
    tasks:
-       - ec2:
+      - ec2:
          aws_access_key: AKIA5WV354T3AVHWXVWJ
          aws-secret-key: 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
          key_name: aiapi new key
