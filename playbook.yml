@@ -1,19 +1,22 @@
-hosts: localhost
- tasks:
-     ec2:
-       aws_access_key: AKIA5WV354T3AVHWXVWJ
-       aws-secret-key: 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
-       key_name: aiapi new key
-       group: ansible
-       instance_type: t2.micro
-       wait: yes
-       wait_timer: 500
-       image: ami-0747bdcabd34c712a
-       count: 1
-       instance_tag: 
-         Name: prod-instance 
-       monitoring: yes
-       region: us-east-1   
-       vpc_subnet_id: subnet-00741412adbb53c72
-       assign_public_ip: yes
+- name: "play with ansible"
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+         - ec2:
+                  key_name: aiapi new key
+                  region: us-east-1
+                  aws_access_key: AKIA5WV354T3LDA4HR6O
+                  aws_secret_key: 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
+                  group_id: sg-03c7eccdbf2c30b50
+                  instance_type: t2.micro
+                  wait: yes
+                  wait_timeout: 500
+                  image: "ami-0747bdcabd34c712a"
+                  count: 1
+                  instance_tags:
+                         Name: prod-instance
+                  monitoring: yes
+                  vpc_subnet_id: subnet-947a86d8
+                  assign_public_ip: yes
        

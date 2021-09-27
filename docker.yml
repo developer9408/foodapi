@@ -1,0 +1,49 @@
+- name: Pull latest Python Image
+  hosts: localhost
+  tasks:
+  - name: Pull python Image
+    docker_container:
+      name: "python-ansible-base"
+      image: "python:latest"
+      state: started
+      command: tail -f /dev/null
+  - name: Add Python Image to Ansible Hosts
+    add_host:
+      name: "python-ansible-base"
+      ansible_connection: docker
+      ansible_ssh_user: root
+
+- name: Configure Python Base Image for deploying Webserver
+  hosts: "python-ansible-base"
+  gather_facts: false
+  tasks:
+    - name: Install Python3
+      raw: apt update && apt upgrade -y && apt install python3 -y
+    - name: Install Rsync
+      apt:
+        name: rsync
+    - name: Copy local configuration Files to Python Conf
+      synchronize:
+        src: ./foodapi/
+        dest: /usr/share/nginx/html/
+    - name: Ensure Python Is enabled
+      service:
+        name: nginx
+        enabled: yes
+    - name: Clean up Python 3 and Prequisites
+      raw: apt purge python3 rsync -y
+
+- name: Snapshot base image to create newly configured Imafe
+  hosts: localhost
+  tasks:
+    - name: Commit Docker image
+      command: docker commit "nginx-ansible-base" "nginx-ansible-build-demo"
+
+- name: Clean Up Docker Containers
+  hosts: localhost
+  tasks:
+    - name: Remove Running Base Image
+      docker_container:
+        name: nginx-ansible-base
+        state: absent
+        force_kill: yes

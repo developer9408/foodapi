@@ -5,7 +5,15 @@ python:
 services:
    - docker 
 
-before_script: pip install docker-compose
+services:
+- docker
+
+before_install:
+- pip install --user awscli
+- export PATH=$PATH:$HOME/.local/bin
 
 script:
-   - docker-compose 
+- eval $(aws ecr get-login --region us-east-1)
+- docker-compose build
+- docker tag foodapi:latest public.ecr.aws/g5w5n8y2/foodapi:latest
+- docker push public.ecr.aws/g5w5n8y2/foodapi:latest
