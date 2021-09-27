@@ -17,5 +17,3 @@ script:
     - docker tag foodapi:latest public.ecr.aws/g5w5n8y2/foodapi:latest    
     - docker push public.ecr.aws/g5w5n8y2/foodapi:latest
 
-travis encrypt AWS_ACCESS_KEY_ID=AKIA5WV354T3LDA4HR6O --add
-travis encrypt AWS_SECRET_ACCESS_KEY=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 --add
