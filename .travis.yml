@@ -12,8 +12,8 @@ before_install:
     - export PATH=$PATH:$HOME/.local/bin
 
 script:
-    - eval $(aws ecr get-login --region eu-west-1)
+    - eval $(aws ecr get-login --region us-east-1)
     - docker-compose build
-    - docker tag foodapi:latest public.ecr.aws/g5w5n8y2/foodapi:latest    
-    - docker push public.ecr.aws/g5w5n8y2/foodapi:latest
+    - docker tag foodapi:latest public.ecr.aws/d1d5z4z7/foodapi:latest   
+    - docker push public.ecr.aws/d1d5z4z7/foodapi:latest
 
