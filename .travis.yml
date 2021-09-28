@@ -10,7 +10,7 @@ env:
     - AWS_DEFAULT_REGION="us-east-1"
     - DOCKER_REPO_URL="public.ecr.aws/d1d5z4z7/foodapi_${ENV}"
     - DOCKER_IMAGE=${DOCKER_REPO_URL}:${CONTAINER_TAG}
-
+      #hello
 jobs:
   include:
     - stage: Build and push image
