@@ -5,7 +5,7 @@ EXPOSE 5000
 COPY src/requirements.txt /
 
 RUN pip install -r requirements.txt
-#t
+
 
 # Create app directory
 WORKDIR /app
