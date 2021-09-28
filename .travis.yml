@@ -27,15 +27,15 @@ jobs:
       env:
         - ANSIBLE_HOST_KEY_CHECKING=false
       before_install:
-        - openssl aes-256-cbc -K $encrypted_184680ef2e7a_key -iv $encrypted_184680ef2e7a_iv -in healthy-picks.pem.enc -out healthy-picks.pem -d
-        - sudo chmod 0700 ./healthy-picks.pem
+        - openssl aes-256-cbc -K $encrypted_184680ef2e7a_key -iv $encrypted_184680ef2e7a_iv -in 28sep.pem.enc -out 28sep.pem -d
+        - sudo chmod 0700 ./28sep.pem
       install:
         - sudo pip install ansible botocore boto3
       before_script:
         - cd deploy/ansible
       script: ansible-playbook -i inventory -b  -u ubuntu --extra-vars "docker_image=${DOCKER_IMAGE}
         aws_access_key=${AWS_ACCESS_KEY_ID} aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
-        aws_region=${AWS_DEFAULT_REGION}" --private-key ../../healthy-picks.pem
+        aws_region=${AWS_DEFAULT_REGION}" --private-key ../../28sep.pem
         playbook.yml || travis_terminate 1;
     - stage: Deploy prod
       if: branch = master and type = push
