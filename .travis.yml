@@ -1,17 +1,21 @@
 language: python
 python:
-   - "3.6"
+    - "3.6"
 
 services:
 - docker
 
-before_install:
- - pip install awscli
- - export PATH=$PATH:$HOME/.local/bin
+before_deploy:
+    - 'curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"'
+    - 'unzip awscli-bundle.zip'
+    - './awscli-bundle/install -b ~/bin/aws'
+    - 'export PATH=~/bin:$PATH'
+    - 'aws configure'
+ 
 
 script:
-  - eval $(aws ecr get-login --region us-east-1)
-  - docker-compose build
-  - docker tag foodapi:latest public.ecr.aws/g5w5n8y2/foodapi:latest
-  - docker push public.ecr.aws/g5w5n8y2/foodapi:latest
+    - eval $(aws ecr get-login --region us-east-1)
+    - docker-compose build
+    - docker tag foodapi:latest public.ecr.aws/g5w5n8y2/foodapi:latest
+    - docker push public.ecr.aws/g5w5n8y2/foodapi:latest
 
