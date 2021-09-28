@@ -10,6 +10,7 @@ services:
 before_install:
     - pip install awscli
     - export PATH=$PATH:$HOME/.local/bin
+    - aws configure
 
 script:
     - eval $(aws ecr get-login --region us-east-1)
