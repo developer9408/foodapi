@@ -6,12 +6,16 @@ services:
 - docker
 
 before_deploy:
-    - pip install awscli
+    - sudo apt update
+    - sudo apt-get install awscli
+    - sudo apt install python
+    - apt install python-pip
+    - sudo apt-get install docker.io
     - 'aws configure'
  
 
 script:
-    - eval $(aws ecr get-login --region us-east-1)
+    - eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
     - docker-compose build
     - docker tag foodapi:latest public.ecr.aws/g5w5n8y2/foodapi:latest
     - docker push public.ecr.aws/g5w5n8y2/foodapi:latest
