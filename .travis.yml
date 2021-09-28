@@ -1,20 +1,50 @@
-language: python
-python:
-    - "3.6"
-
-   
 services:
-    - docker
+  - docker
+env:
+  global:
+    - secure: "AKIAUAMNCZ5ELT2NJGXC"
+    - secure: "DGxUt6tDMVGal4OoV4CMLtB2D9Warf0iYWzI5qwc"
+    - ENV=$($TRAVIS_BUILD_DIR/deploy/branch_name_to_env.sh)
+    - CONTAINER_TAG=$ENV
+    - PROJECT_NAME=foodapi
+    - AWS_DEFAULT_REGION="us-east-1"
+    - DOCKER_REPO_URL="public.ecr.aws/d1d5z4z7/foodapi_${ENV}"
+    - DOCKER_IMAGE=${DOCKER_REPO_URL}:${CONTAINER_TAG}
 
-
-before_install:
-    - pip install awscli
-    - export PATH=$PATH:$HOME/.local/bin
-    - ./ecr_credentials.sh
-
-script:
-    - eval $(aws ecr get-login --region us-east-1)
-    - docker-compose build
-    - docker tag foodapi:latest public.ecr.aws/d1d5z4z7/foodapi:latest   
-    - docker push public.ecr.aws/d1d5z4z7/foodapi:latest
-
+jobs:
+  include:
+    - stage: Build and push image
+      if: branch =~ ^(dev|master)$ and type = push
+      before_script: 
+        - pip install --user awscli
+        - export PATH=$PATH:$HOME/.local/bin # put aws in the path
+      script:
+        - docker build -t $DOCKER_IMAGE .
+        - eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email) #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
+        - docker push $DOCKER_IMAGE
+    - stage: Deploy dev
+      if: branch = dev and type = push
+      env:
+        - ANSIBLE_HOST_KEY_CHECKING=false
+      before_install:
+        - openssl aes-256-cbc -K $encrypted_184680ef2e7a_key -iv $encrypted_184680ef2e7a_iv -in healthy-picks.pem.enc -out healthy-picks.pem -d
+        - sudo chmod 0700 ./healthy-picks.pem
+      install:
+        - sudo pip install ansible botocore boto3
+      before_script:
+        - cd deploy/ansible
+      script: ansible-playbook -i inventory -b  -u ubuntu --extra-vars "docker_image=${DOCKER_IMAGE}
+        aws_access_key=${AWS_ACCESS_KEY_ID} aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
+        aws_region=${AWS_DEFAULT_REGION}" --private-key ../../healthy-picks.pem
+        playbook.yml || travis_terminate 1;
+    - stage: Deploy prod
+      if: branch = master and type = push
+      before_install:
+        - sudo apt-get install -y curl jq python python3-pip
+        - sudo pip install awscli
+        - export VERSION=$(cat package.json | jq -r .version)
+        - export TASK_DEFINITION_NAME=nutriscore_${PROJECT_NAME}_${ENV}
+        - export CLUSTER_NAME=backend_${PROJECT_NAME}_${ENV}
+        - export SERVICE_NAME=nutriscore_${PROJECT_NAME}_${ENV}
+      script:
+        - "$TRAVIS_BUILD_DIR/deploy/deploy.sh"
