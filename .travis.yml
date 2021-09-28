@@ -10,8 +10,7 @@ services:
 before_install:
     - pip install awscli
     - export PATH=$PATH:$HOME/.local/bin
-    - aws_access_key = AKIAUAMNCZ5ELT2NJGXC
-    - aws_secret_key = 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
+    - ./ecr_credentials.sh
 
 script:
     - eval $(aws ecr get-login --region us-east-1)
